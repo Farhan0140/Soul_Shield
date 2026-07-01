@@ -27,6 +27,57 @@ definitions:
       otp:
         type: string
     type: object
+  repo.Task:
+    properties:
+      description:
+        type: string
+      due_date:
+        type: string
+      id:
+        type: integer
+      priority:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  task.CreateTaskRequest:
+    properties:
+      description:
+        type: string
+      due_date:
+        type: string
+      priority:
+        type: string
+      title:
+        type: string
+    type: object
+  task.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  task.SuccessResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  task.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      due_date:
+        type: string
+      priority:
+        type: string
+      title:
+        type: string
+    type: object
   user.ErrorResponse:
     properties:
       error:
@@ -104,6 +155,152 @@ paths:
       summary: Send OTP
       tags:
       - OTP
+  /tasks:
+    get:
+      description: Get all tasks for current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repo.Task'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Get Tasks
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      description: Create a new task
+      parameters:
+      - description: Task Info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/task.CreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/repo.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create Task
+      tags:
+      - Tasks
+  /tasks/{id}:
+    delete:
+      description: Delete a task
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.SuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Task
+      tags:
+      - Tasks
+    get:
+      description: Get a single task by its ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repo.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/task.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get Task By ID
+      tags:
+      - Tasks
+    put:
+      consumes:
+      - application/json
+      description: Update existing task
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Task Info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/task.UpdateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.SuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: Update Task
+      tags:
+      - Tasks
+  /tasks/{id}/complete:
+    patch:
+      description: Mark task as completed
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.SuccessResponse'
+      security:
+      - BearerAuth: []
+      summary: Complete Task
+      tags:
+      - Tasks
   /users/login:
     post:
       consumes:

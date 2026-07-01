@@ -68,6 +68,239 @@ const docTemplate = `{
                 }
             }
         },
+        "/tasks": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all tasks for current user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Get Tasks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repo.Task"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Create Task",
+                "parameters": [
+                    {
+                        "description": "Task Info",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/task.CreateTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/repo.Task"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/task.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a single task by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Get Task By ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repo.Task"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/task.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/task.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/task.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update existing task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Update Task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Task Info",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/task.UpdateTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/task.SuccessResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a task",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Delete Task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/task.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}/complete": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mark task as completed",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Complete Task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/task.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/login": {
             "post": {
                 "description": "Login using email and password",
@@ -321,6 +554,85 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "otp": {
+                    "type": "string"
+                }
+            }
+        },
+        "repo.Task": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "task.CreateTaskRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "task.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "task.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "task.UpdateTaskRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

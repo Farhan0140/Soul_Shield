@@ -8,6 +8,7 @@ import (
 	"soulsheld/repo"
 	"soulsheld/rest"
 	otp "soulsheld/rest/handlers/opt"
+	"soulsheld/rest/handlers/task"
 	"soulsheld/rest/handlers/user"
 	"soulsheld/rest/middlewares"
 	"time"
@@ -36,14 +37,17 @@ func Serve() {
 
 	userRepo := repo.NewUserRepo(dbCon)
 	otpRepo := repo.NewOtpRepo(dbCon)
+	taskRepo := repo.NewTaskRepo(dbCon)
 
 	userHandler := user.NewHandler(cnf, userRepo, otpRepo, middlewares)
 	otpHandler := otp.NewHandler(otpRepo)
+	taskHandler := task.NewHandler(cnf, taskRepo, middlewares)
 
 	server := rest.NewServer(
 		cnf,
 		userHandler,
 		otpHandler,
+		taskHandler,
 	)
 	server.Start()
 }

@@ -6,28 +6,32 @@ import (
 	"os"
 	"soulsheld/config"
 	otp "soulsheld/rest/handlers/opt"
+	"soulsheld/rest/handlers/task"
 	"soulsheld/rest/handlers/user"
 	"soulsheld/rest/middlewares"
 	"strconv"
 
-	 httpSwagger "github.com/swaggo/http-swagger"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Server struct {
 	cnf         *config.Config
 	userHandler *user.Handler
-	otpHandler *otp.Handler
+	otpHandler  *otp.Handler
+	taskHandler *task.Handler
 }
 
 func NewServer(
 	cnf *config.Config,
 	userHandler *user.Handler,
 	otpHandler *otp.Handler,
+	taskHandler *task.Handler,
 ) *Server {
 	return &Server{
 		cnf:         cnf,
 		userHandler: userHandler,
-		otpHandler: otpHandler,
+		otpHandler:  otpHandler,
+		taskHandler: taskHandler,
 	}
 }
 
@@ -46,11 +50,12 @@ func (server *Server) Start() {
 		"/swagger/",
 		httpSwagger.WrapHandler,
 	)
-	
+
 	wrappedMux := manager.WrapMux(mux)
 
 	server.userHandler.RegisterRoutes(mux, manager)
 	server.otpHandler.RegisterRoutes(mux)
+	server.taskHandler.RegisterRoutes(mux, manager)
 
 	// addr := ":" + strconv.Itoa(server.cnf.HttpPort)
 	// fmt.Println("Server is Running on port ", addr)
