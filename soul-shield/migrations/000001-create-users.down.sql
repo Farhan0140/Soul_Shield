@@ -1,2 +1,3 @@
 -- +migrate Down
-DROP TABLE users IF EXISTS;
+DROP INDEX IF EXISTS idx_users_email;
+DROP TABLE IF EXISTS users;

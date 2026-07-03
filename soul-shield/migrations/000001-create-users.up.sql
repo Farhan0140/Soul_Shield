@@ -1,10 +1,13 @@
+
 -- +migrate Up
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users(
 	id BIGSERIAL PRIMARY KEY,
-	full_name VARCHAR(100) NOT NULL CHECK (length(full_name) > 0),
+	full_name VARCHAR(100) NOT NULL CHECK(length(trim(full_name))>0),
 	email VARCHAR(255) NOT NULL UNIQUE,
 	password TEXT NOT NULL,
-	role VARCHAR(100),
-	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+	role VARCHAR(20) NOT NULL DEFAULT 'user' CHECK(role IN('user','admin')),
+	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_users_email ON users(email);
