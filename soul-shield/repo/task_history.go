@@ -15,10 +15,17 @@ type TaskHistory struct {
 	CreatedAt   time.Time `db:"created_at" json:"created_at"`
 }
 
+type TaskHistoryWithTask struct {
+	ID          int       `db:"id" json:"id"`
+	TaskID      int       `db:"task_id" json:"task_id"`
+	TaskTitle   string    `db:"task_title" json:"task_title"`
+	Status      string    `db:"status" json:"status"`
+	CompletedAt time.Time `db:"completed_at" json:"completed_at"`
+}
+
 type TaskHistoryRepo interface {
-	Create(history TaskHistory) error
-	GetAll(userID int) ([]TaskHistory, error)
-	GetByTaskID(taskID int, userID int,) ([]TaskHistory, error)
+	GetAll(userID int) ([]TaskHistoryWithTask, error)
+	GetByTaskID(taskID int, userID int) ([]TaskHistoryWithTask, error)
 }
 
 type taskHistoryRepo struct {
@@ -34,48 +41,24 @@ func NewTaskHistoryRepo(
 	}
 }
 
-func (r *taskHistoryRepo) Create(history TaskHistory) error {
+func (r *taskHistoryRepo) GetAll(userID int) ([]TaskHistoryWithTask, error) {
 
-	query := `
-		INSERT INTO task_histories(
-			task_id,
-			user_id,
-			status,
-			completed_at
-		) VALUES (
-			$1,
-			$2,
-			$3,
-			$4
-		)
-	`
-
-	_, err := r.db.Exec(
-		query,
-		history.TaskID,
-		history.UserID,
-		history.Status,
-		history.CompletedAt,
-	)
-
-	return err
-}
-
-func (r *taskHistoryRepo) GetAll(userID int) ([]TaskHistory, error) {
-
-	var histories []TaskHistory
+	var histories []TaskHistoryWithTask
 
 	query := `
 		SELECT
-			id,
-			task_id,
-			user_id,
-			status,
-			completed_at,
-			created_at
-		FROM task_histories
-		WHERE user_id=$1
-		ORDER BY completed_at DESC
+			th.id,
+			th.task_id,
+			t.title AS task_title,
+			th.status,
+			th.completed_at
+		FROM task_histories th
+		INNER JOIN tasks t
+			ON t.id = th.task_id
+		WHERE
+			th.user_id = $1
+		ORDER BY
+			th.completed_at DESC
 	`
 
 	err := r.db.Select(
@@ -91,24 +74,26 @@ func (r *taskHistoryRepo) GetAll(userID int) ([]TaskHistory, error) {
 	return histories, nil
 }
 
-func (r *taskHistoryRepo) GetByTaskID(taskID int, userID int) ([]TaskHistory, error) {
+func (r *taskHistoryRepo) GetByTaskID(taskID int, userID int) ([]TaskHistoryWithTask, error) {
 
-	var histories []TaskHistory
+	var histories []TaskHistoryWithTask
 
 	query := `
 		SELECT
-			id,
-			task_id,
-			user_id,
-			status,
-			completed_at,
-			created_at
-		FROM task_histories
+			th.id,
+			th.task_id,
+			t.title AS task_title,
+			th.status,
+			th.completed_at
+		FROM task_histories th
+		INNER JOIN tasks t
+			ON t.id = th.task_id
 		WHERE
-			task_id=$1
+			th.task_id = $1
 			AND
-			user_id=$2
-		ORDER BY completed_at DESC
+			th.user_id = $2
+		ORDER BY
+			th.completed_at DESC
 	`
 
 	err := r.db.Select(
