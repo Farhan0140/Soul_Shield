@@ -199,13 +199,22 @@ func (r *taskRepo) Delete(id int, userID int) error {
 
 func (r *taskRepo) Complete(id int, userID int) error {
 
-	result, err := r.db.Exec(`
+	tx, err := r.db.Beginx()
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	// Update task status
+	result, err := tx.Exec(`
 		UPDATE tasks
 		SET
 			status = 'completed',
 			updated_at = NOW()
-		WHERE id = $1
-		AND user_id = $2
+		WHERE
+			id = $1
+			AND user_id = $2
 	`,
 		id,
 		userID,
@@ -215,10 +224,42 @@ func (r *taskRepo) Complete(id int, userID int) error {
 		return err
 	}
 
-	rowsAffected, _ := result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
 
 	if rowsAffected == 0 {
 		return util.ErrTaskNotFound
+	}
+
+	// Insert history
+	_, err = tx.Exec(`
+		INSERT INTO task_histories (
+			task_id,
+			user_id,
+			status,
+			completed_at
+		)
+		VALUES (
+			$1,
+			$2,
+			$3,
+			NOW()
+		)
+	`,
+		id,
+		userID,
+		util.TaskCompleted,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	// Commit transaction
+	if err := tx.Commit(); err != nil {
+		return err
 	}
 
 	return nil
