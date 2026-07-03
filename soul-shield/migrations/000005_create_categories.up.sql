@@ -6,10 +6,12 @@ CREATE TABLE categories(
     color VARCHAR(20) NOT NULL DEFAULT '#3B82F6' CHECK(color ~ '^#[0-9A-Fa-f]{6}$'),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    
     CONSTRAINT fk_category_user
-    FOREIGN KEY(user_id)
-    REFERENCES users(id)
+        FOREIGN KEY(user_id)
+        REFERENCES users(id)
     ON DELETE CASCADE,
+
     CONSTRAINT unique_user_category
     UNIQUE(user_id,name)
 );

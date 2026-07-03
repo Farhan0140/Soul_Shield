@@ -9,4 +9,6 @@ var (
 	ErrUserNotFound        = errors.New("User Not Found with this email")
 	ErrTaskNotFound        = errors.New("Task not found")
 	ErrTaskHistoryNotFound = errors.New("task history not found")
+	ErrCategoryNotFound    = errors.New("category not found")
+	ErrCategoryExists      = errors.New("category already exists")
 )
