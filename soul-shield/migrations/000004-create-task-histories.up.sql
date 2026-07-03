@@ -2,7 +2,7 @@
 
 CREATE TABLE task_histories(
     id BIGSERIAL PRIMARY KEY,
-    task_id BIGINT NOT NULL,
+    task_id BIGINT NULL,
     user_id BIGINT NOT NULL,
     completed_date DATE NOT NULL,
     completed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -12,7 +12,7 @@ CREATE TABLE task_histories(
     CONSTRAINT fk_history_task
         FOREIGN KEY(task_id)
         REFERENCES tasks(id)
-        ON DELETE CASCADE,
+        ON DELETE SET NULL,
         
     CONSTRAINT fk_history_user
         FOREIGN KEY(user_id)

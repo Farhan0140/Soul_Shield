@@ -11,4 +11,5 @@ var (
 	ErrTaskHistoryNotFound = errors.New("task history not found")
 	ErrCategoryNotFound    = errors.New("category not found")
 	ErrCategoryExists      = errors.New("category already exists")
+	ErrInvalidRequest   = errors.New("invalid request")
 )

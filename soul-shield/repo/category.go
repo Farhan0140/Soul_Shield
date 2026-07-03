@@ -4,20 +4,10 @@ import (
 	"database/sql"
 	"errors"
 	"soulsheld/util"
-	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 )
-
-type Category struct {
-	ID        int       `db:"id" json:"id"`
-	UserID    int       `db:"user_id" json:"user_id"`
-	Name      string    `db:"name" json:"name"`
-	Color     string    `db:"color" json:"color"`
-	CreatedAt time.Time `db:"created_at" json:"created_at"`
-	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
-}
 
 type CategoryRepo interface {
 	Create(category Category) (*Category, error)

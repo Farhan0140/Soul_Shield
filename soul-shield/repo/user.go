@@ -11,13 +11,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type User struct {
-	ID        int    `json:"id" db:"id"`
-	Full_Name string `json:"full_name" db:"full_name"`
-	Email     string `json:"email" db:"email"`
-	Password  string `json:"password" db:"password"`
-}
-
 type UserRepo interface {
 	Create(user User) (*User, error)
 	Find(email, password string) (*User, error)

@@ -16,7 +16,7 @@ CREATE TABLE tasks(
     estimated_minutes INTEGER NOT NULL DEFAULT 0 CHECK(estimated_minutes>=0),
     last_completed_date DATE,
     next_due_date DATE NOT NULL DEFAULT CURRENT_DATE,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK(status IN('active','archived')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
@@ -36,3 +36,14 @@ CREATE INDEX idx_tasks_category ON tasks(category_id);
 CREATE INDEX idx_tasks_repeat_type ON tasks(repeat_type);
 CREATE INDEX idx_tasks_next_due_date ON tasks(next_due_date);
 CREATE INDEX idx_tasks_active ON tasks(is_active);
+CREATE INDEX idx_tasks_user_active
+ON tasks(user_id,is_active);
+
+CREATE INDEX idx_tasks_user_due
+ON tasks(user_id,next_due_date);
+CREATE INDEX idx_tasks_dashboard
+ON tasks(
+	user_id,
+	status,
+	next_due_date
+);

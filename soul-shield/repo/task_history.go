@@ -1,27 +1,8 @@
 package repo
 
 import (
-	"time"
-
 	"github.com/jmoiron/sqlx"
 )
-
-type TaskHistory struct {
-	ID          int       `db:"id" json:"id"`
-	TaskID      int       `db:"task_id" json:"task_id"`
-	UserID      int       `db:"user_id" json:"user_id"`
-	Status      string    `db:"status" json:"status"`
-	CompletedAt time.Time `db:"completed_at" json:"completed_at"`
-	CreatedAt   time.Time `db:"created_at" json:"created_at"`
-}
-
-type TaskHistoryWithTask struct {
-	ID          int       `db:"id" json:"id"`
-	TaskID      int       `db:"task_id" json:"task_id"`
-	TaskTitle   string    `db:"task_title" json:"task_title"`
-	Status      string    `db:"status" json:"status"`
-	CompletedAt time.Time `db:"completed_at" json:"completed_at"`
-}
 
 type TaskHistoryRepo interface {
 	GetAll(userID int) ([]TaskHistoryWithTask, error)
