@@ -12,34 +12,34 @@ type User struct {
 
 // Task
 type Task struct {
-	ID                int64      `db:"id" json:"id"`
-	UserID            int64      `db:"user_id" json:"user_id"`
-	CategoryID        *int64     `db:"category_id" json:"category_id,omitempty"`
-	Title             string     `db:"title" json:"title"`
-	Description       string     `db:"description" json:"description"`
-	Priority          string     `db:"priority" json:"priority"`
-	RepeatType        string     `db:"repeat_type" json:"repeat_type"`
-	RepeatInterval    int        `db:"repeat_interval" json:"repeat_interval"`
-	RepeatDays        *string    `db:"repeat_days" json:"repeat_days,omitempty"`
-	StartDate         time.Time  `db:"start_date" json:"start_date"`
-	EndDate           *time.Time `db:"end_date" json:"end_date,omitempty"`
-	StartTime         *string    `db:"start_time" json:"start_time,omitempty"`
-	EstimatedMinutes  int        `db:"estimated_minutes" json:"estimated_minutes"`
-	LastCompletedDate *time.Time `db:"last_completed_date" json:"last_completed_date,omitempty"`
-	NextDueDate       time.Time  `db:"next_due_date" json:"next_due_date"`
-	Status            string     `db:"status" json:"status"`
-	CreatedAt         time.Time  `db:"created_at" json:"created_at"`
-	UpdatedAt         time.Time  `db:"updated_at" json:"updated_at"`
+	ID                int64      `db:"id"`
+	UserID            int64      `db:"user_id"`
+	CategoryID        *int64     `db:"category_id"`
+	Title             string     `db:"title"`
+	Description       string     `db:"description"`
+	Priority          string     `db:"priority"`
+	RepeatType        string     `db:"repeat_type"`
+	RepeatInterval    int        `db:"repeat_interval"`
+	RepeatDays        *string    `db:"repeat_days"`
+	StartDate         time.Time  `db:"start_date"`
+	EndDate           *time.Time `db:"end_date"`
+	StartTime         *string    `db:"start_time"`
+	EstimatedMinutes  int        `db:"estimated_minutes"`
+	LastCompletedDate *time.Time `db:"last_completed_date"`
+	NextDueDate       time.Time  `db:"next_due_date"`
+	Status            string     `db:"status"`
+	CreatedAt         time.Time  `db:"created_at"`
+	UpdatedAt         time.Time  `db:"updated_at"`
 }
 
 type TaskFilter struct {
-	Page int
-	Limit int
-	Search string
+	Page       int
+	Limit      int
+	Search     string
 	CategoryID *int64
-	Priority *string
+	Priority   *string
 	RepeatType *string
-	Status *string
+	Status     *string
 }
 
 // Task History
